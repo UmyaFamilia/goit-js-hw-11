@@ -1,8 +1,9 @@
 import axios from 'axios';
 const form = document.querySelector('.search-form');
-const inpute = document.querySelector('[name="searchQuery"]');
-const submitButton = document.querySelector('[type="submit"]');
+const inpute = document.querySelector('[ name="searchQuery"]');
 const gallery = document.querySelector('.gallery');
+const loadMore = document.querySelector('.load-more');
+let pageNumber = 1;
 let array = [];
 //
 //
@@ -18,14 +19,17 @@ const API_KEY = '38759560-76db7c61ea024fe4bd5e7b79d';
 //
 //
 //
-let inputeValue = '';
-let obj = {};
+//
 form.addEventListener('submit', showImage);
-function showImage(event) {
-  event.preventDefault();
-  inputeValue = event.currentTarget.firstElementChild.value;
 
-  makeCards(throwPromise(inputeValue));
+function showImage(event) {
+  loadMore.classList.add('hidden');
+  pageNumber = 1;
+  gallery.innerHTML = '';
+  event.preventDefault();
+
+  makeCards(throwPromise(inpute.value, pageNumber));
+  console.log(throwPromise(inpute.value, pageNumber));
 }
 //
 //
@@ -34,10 +38,23 @@ function showImage(event) {
 //
 //
 //
-async function throwPromise(name) {
+//
+loadMore.addEventListener('click', () => {
+  pageNumber += 1;
+  makeCards(throwPromise(inpute.value, pageNumber));
+});
+
+//
+//
+//
+//
+//
+//
+//
+async function throwPromise(name, page) {
   return await axios
     .get(
-      `${MAIN_URL}?key=${API_KEY}&q=${name}&image_type=photo&orientation=horizontal&safesearch=true`
+      `${MAIN_URL}?key=${API_KEY}&q=${name}&image_type=photo&orientation=horizontal&safesearch=true&per_page=110&page=${page}`
     )
     .then(resolve => {
       if (resolve.data.hits.length === 0) {
@@ -58,27 +75,34 @@ async function throwPromise(name) {
 //
 //
 //
+//
 function makeCards(promise) {
   promise.then(resolve => {
     array = resolve.hits.map(a => {
       return `<div class="photo-card" id="${a.id}" largeImageURL="${a.largeImageURL}">
-      <img src="${a.webformatURL}" alt="${a.tags}" loading="lazy" />
+      <img src="${a.webformatURL}" alt="${a.tags}" loading="lazy" width=300/>
       <div class="info">
         <p class="info-item">
-          <b>Likes${a.likes}</b>
+          <b>Likes<br>${a.likes}</b>
         </p>
         <p class="info-item">
-          <b>Views${a.views}</b>
+          <b>Views<br>${a.views}</b>
         </p>
         <p class="info-item">
-          <b>Comments${a.comments}</b>
+          <b>Comments<br>${a.comments}</b>
         </p>
         <p class="info-item">
-          <b>Downloads${a.downloads}</b>
+          <b>Downloads<br>${a.downloads}</b>
         </p>
       </div>
     </div>`;
     });
     gallery.insertAdjacentHTML('beforeend', array.join(''));
+    loadMore.classList.remove('hidden');
+
+    if (gallery.childElementCount >= resolve.totalHits) {
+      loadMore.classList.add('hidden');
+      console.log("We're sorry, but you've reached the end of search results.");
+    }
   });
 }

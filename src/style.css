@@ -1,0 +1,25 @@
+.load-more{
+
+}
+.hidden{
+  display: none;
+}
+.photo-card{
+margin: 30px;
+}
+.info-item{
+  margin-right: 10px;
+
+}
+.info{
+  display: flex;
+  flex-wrap:wrap;
+  margin-right: 10px;
+  justify-content:center
+}
+.gallery{
+
+  display: flex;
+  flex-wrap:wrap;
+  justify-content:space-evenly;
+}
