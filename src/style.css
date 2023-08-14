@@ -1,5 +1,23 @@
 .load-more{
 
+  display: block;
+  margin-left: auto;
+  margin-right: auto }
+
+.buttton-style{
+  border-radius: 10px;
+  color: white;
+  transition: .2s linear;
+  background: #0B63F6;
+  position: relative;
+  height: 30px;
+  top: 0;
+  left: 0
+}
+.buttton-style:hover {
+  box-shadow: 2px 2px white, 4px 4px #FC63B5;
+  top: -4px;
+  left: -4px;
 }
 .hidden{
   display: none;
@@ -22,4 +40,8 @@ margin: 30px;
   display: flex;
   flex-wrap:wrap;
   justify-content:space-evenly;
+}
+.search-form{
+  display: flex;
+  justify-content: center;
 }

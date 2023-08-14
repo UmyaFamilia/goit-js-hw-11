@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Notiflix from 'notiflix';
 const form = document.querySelector('.search-form');
 const inpute = document.querySelector('[ name="searchQuery"]');
 const gallery = document.querySelector('.gallery');
@@ -11,6 +12,7 @@ let array = [];
 //
 //
 //
+
 const MAIN_URL = 'https://pixabay.com/api/';
 const API_KEY = '38759560-76db7c61ea024fe4bd5e7b79d';
 //
@@ -23,13 +25,12 @@ const API_KEY = '38759560-76db7c61ea024fe4bd5e7b79d';
 form.addEventListener('submit', showImage);
 
 function showImage(event) {
-  loadMore.classList.add('hidden');
+  // loadMore.classList.add('hidden');
   pageNumber = 1;
   gallery.innerHTML = '';
   event.preventDefault();
 
   makeCards(throwPromise(inpute.value, pageNumber));
-  console.log(throwPromise(inpute.value, pageNumber));
 }
 //
 //
@@ -54,14 +55,15 @@ loadMore.addEventListener('click', () => {
 async function throwPromise(name, page) {
   return await axios
     .get(
-      `${MAIN_URL}?key=${API_KEY}&q=${name}&image_type=photo&orientation=horizontal&safesearch=true&per_page=110&page=${page}`
+      `${MAIN_URL}?key=${API_KEY}&q=${name}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${page}`
     )
     .then(resolve => {
       if (resolve.data.hits.length === 0) {
-        throw new Error(
+        Notiflix.Notify.failure(
           'Sorry, there are no images matching your search query. Please try again.'
         );
       }
+      console.log(resolve);
 
       return resolve.data;
     })
@@ -99,10 +101,15 @@ function makeCards(promise) {
     });
     gallery.insertAdjacentHTML('beforeend', array.join(''));
     loadMore.classList.remove('hidden');
+    console.log('я твій рот їбав');
 
-    if (gallery.childElementCount >= resolve.totalHits) {
+    if (gallery.childElementCount > resolve.totalHits) {
       loadMore.classList.add('hidden');
-      console.log("We're sorry, but you've reached the end of search results.");
+      Notiflix.Notify.info(
+        "We're sorry, but you've reached the end of search results."
+      );
+    } else if (resolve.totalHits == 0) {
+      loadMore.classList.add('hidden');
     }
   });
 }
