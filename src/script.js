@@ -25,7 +25,6 @@ const API_KEY = '38759560-76db7c61ea024fe4bd5e7b79d';
 form.addEventListener('submit', showImage);
 
 function showImage(event) {
-  // loadMore.classList.add('hidden');
   pageNumber = 1;
   gallery.innerHTML = '';
   event.preventDefault();
@@ -63,7 +62,6 @@ async function throwPromise(name, page) {
           'Sorry, there are no images matching your search query. Please try again.'
         );
       }
-      console.log(resolve);
 
       return resolve.data;
     })
@@ -101,7 +99,6 @@ function makeCards(promise) {
     });
     gallery.insertAdjacentHTML('beforeend', array.join(''));
     loadMore.classList.remove('hidden');
-    console.log('я твій рот їбав');
 
     if (gallery.childElementCount > resolve.totalHits) {
       loadMore.classList.add('hidden');
